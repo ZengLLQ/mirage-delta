@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Foundry & Vyper Test Suite
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Vyper
+        run: |
+          pip install vyper==0.4.3
+          vyper --version
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+
+      - name: Check Formatting
+        run: forge fmt --check
+
+      - name: Compile Contracts & Check Sizes
+        run: forge build --sizes
+
+      - name: Run Foundry Test Suite with Fuzzing
+        run: forge test -vvv --fuzz-runs 256
+
+      - name: Run Simulated Deployment Script
+        run: forge script script/DeployMirageDelta.s.sol

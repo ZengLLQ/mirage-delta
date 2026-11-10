@@ -1,0 +1,18 @@
+# Foundry outputs
+out/
+cache/
+
+# Vyper build artifacts
+*.vy.json
+*.abi
+*.bin
+
+# Environment & secrets
+.env
+.env.*
+*.pem
+*.key
+
+# System files
+.DS_Store
+Thumbs.db
